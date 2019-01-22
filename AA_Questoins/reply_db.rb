@@ -15,6 +15,7 @@ class Reply
   attr_accessor :id, :question_id, :author_id, :parent_id, :body
 
   def initialize(options)
+    @id = options['id']
     @question_id = options['question_id']
     @author_id = options['author_id']
     @parent_id = options['parent_id']
@@ -57,9 +58,35 @@ class Reply
     FROM 
       replies
     WHERE
-      question_id = ?
+      question_id = ? 
     SQL
     return nil unless reply.length > 0
     Reply.new(reply.first)
   end
+
+  def author
+    Users.find_by_id(@author_id)
+  end
+
+  def question
+    Question.find_by_question_id(@question_id)
+  end
+
+  def parent_reply
+    self.find_by_id(@parent_id)
+  end
+
+  def child_replies
+    parent = @id
+    child = QuestionsDBConnection.instance.execute(<<-SQL, parent)
+    SELECT
+      *
+    FROM
+      replies
+    WHERE
+      parent_id = ?
+    SQL
+  end
+  
+
 end

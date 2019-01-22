@@ -21,7 +21,6 @@ CREATE TABLE question_follows (
   question_id INTEGER NOT NULL,
 FOREIGN KEY (author_id) REFERENCES users(id),
 FOREIGN KEY (question_id) REFERENCES questions(id)
-
 );
 
 CREATE TABLE replies (
@@ -33,15 +32,14 @@ CREATE TABLE replies (
 FOREIGN KEY (author_id) REFERENCES users(id),
 FOREIGN KEY (question_id) REFERENCES questions(id),
 FOREIGN KEY (parent_id) REFERENCES replies(id)
-
 );
+
 CREATE TABLE question_likes (
   id INTEGER PRIMARY KEY,
   author_id INTEGER NOT NULL,
   question_id INTEGER NOT NULL,
 FOREIGN KEY (author_id) REFERENCES users(id),
 FOREIGN KEY (question_id) REFERENCES questions(id)
-
 );
 
 
@@ -63,14 +61,33 @@ VALUES
   ((SELECT id FROM users WHERE fname = 'Young'), 
   (SELECT id from questions WHERE title = 'I need help' ));
 
+
+
+
 INSERT INTO
 replies(question_id,author_id,parent_id,body)
 VALUES
 ((SELECT id FROM questions WHERE title = 'I need help'), 
   (SELECT id FROM users  WHERE fname = 'Eric'),
-  (SELECT id FROM replies WHERE body = 'AOIDGHAIOPHGPIAHVIPJAEIP'),
-  ('this is the bodywfawbjkpia') 
+  NULL,
+  ('this is the bodywfawbjkpia'));
+
+  -- ((SELECT id FROM questions WHERE title = 'I need help'), 
+  -- (SELECT id FROM users  WHERE fname = 'Eric'),
+  -- (SELECT id FROM replies WHERE body = 'this is the bodywfawbjkpia'),
+  -- ('reply to reply') 
+-- );
+
+INSERT INTO
+replies(question_id,author_id,parent_id,body)
+VALUES
+  ((SELECT id FROM questions WHERE title = 'I need help'), 
+  (SELECT id FROM users  WHERE fname = 'Eric'),
+  (SELECT id FROM replies WHERE body = 'this is the bodywfawbjkpia'),
+  ('reply to reply') 
 );
+
+
 
 INSERT INTO
   question_likes(author_id, question_id)

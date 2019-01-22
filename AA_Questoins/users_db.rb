@@ -1,6 +1,6 @@
 require 'sqlite3'
 require 'singleton'
-
+require_relative 'questions_db'
 class QuestionsDBConnection < SQLite3::Database
   include Singleton
 
@@ -15,6 +15,7 @@ class User
   attr_accessor :id ,:fname, :lname
 
   def initialize(options)
+    @id = options['id']  
     @fname = options['fname']
     @lname = options['lname']
   end
@@ -42,8 +43,16 @@ class User
       fname = ?, lname = ?
 
     SQL
-    nil
+    return nil unless user.length > 0
+    User.new(user.first)
   end
 
-  
+  def authored_questions
+    my_questions = Question.find_by_author_id(self.id)
+  end
+
+  def authored_replies
+    my_reply = Reply.find_by_user_id(self.id)
+  end
+
 end
