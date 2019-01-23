@@ -1,6 +1,7 @@
 require 'sqlite3'
 require 'singleton'
 require_relative 'questions_db'
+require_relative 'question_follows_db'
 class QuestionsDBConnection < SQLite3::Database
   include Singleton
 
@@ -55,4 +56,7 @@ class User
     my_reply = Reply.find_by_user_id(self.id)
   end
 
+  def follow_questions
+    QuestionFollow.followed_question_for_user_id(@id)
+  end
 end

@@ -55,11 +55,17 @@ VALUES
   ('I need help', 'hello i need some help please', (SELECT id FROM users WHERE fname = 'Eric')),
   ('help', 'hello, help please', (SELECT id FROM users WHERE fname = 'Young'));
 
+
+
 INSERT INTO
   question_follows(author_id, question_id)
 VALUES
-  ((SELECT id FROM users WHERE fname = 'Young'), 
-  (SELECT id from questions WHERE title = 'I need help' ));
+  ( (SELECT id FROM users WHERE fname = 'Young'), 
+  (SELECT id from questions WHERE title = 'I need help' )),
+  ((SELECT id FROM users WHERE fname = 'Eric'), 
+  (SELECT id from questions WHERE title = 'I need help' )),
+  ((SELECT id FROM users WHERE fname = 'Eric'), 
+  (SELECT id from questions WHERE title = 'help' ));
 
 
 

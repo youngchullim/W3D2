@@ -23,30 +23,50 @@ class QuestionFollow
   def self.followers_for_question_id(question_id)
     following = QuestionsDBConnection.instance.execute(<<-SQL, question_id)
     SELECT
-      *
+      users.*
     FROM
       users
     JOIN
-      users ON users.id = question_follows.author_id
+      question_follows ON users.id = question_follows.author_id
     WHERE
-      id = ?
+      question_follows.question_id = ?
     SQL
 
     return nil unless following.length > 0
+    following.map { |el| User.new(el) } 
   end
   
-  # def self.followed_question_for_user_id(user_id)
-  #   following = QuestionsDBConnection.instance.execute(<<-SQL, question_id)
-  #   SELECT
-  #     *
-  #   FROM
-  #   questions
-  #   WHERE
-  #   user_id = ?
-  #   SQL
+  def self.followed_question_for_user_id(user_id)
+    following = QuestionsDBConnection.instance.execute(<<-SQL, user_id)
+    SELECT
+      questions.*
+    FROM
+      questions
+    JOIN
+      question_follows ON questions.id = question_follows.question_id
+    WHERE
+      question_follows.question_id = ?
+    SQL
 
-  #   return nil unless following.length > 0
-  # end
+    return nil unless following.length > 0
+    following.map { |el| Question.new(el) }
+  end
 
-  
+  def self.most_followed_question(n)
+    following = QuestionsDBConnection.instance.execute(<<-SQL,n-1)
+    SELECT
+      questions.*
+    FROM
+      questions
+    JOIN
+      question_follows ON questions.id = question_follows.question_id
+    GROUP BY 
+      question_id 
+    ORDER BY
+      COUNT(question_id) DESC
+      LIMIT 1 OFFSET ? 
+    SQL
+    Question.new(following[0])
+  end
+   
 end 
