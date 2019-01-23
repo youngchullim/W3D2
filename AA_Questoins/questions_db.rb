@@ -21,7 +21,7 @@ class Question
     @body = options['body']
     @author_id = options['author_id']
   end
-
+# f
   def self.find_by_id(id)
     question = QuestionsDBConnection.instance.execute(<<-SQL, id)
       SELECT
